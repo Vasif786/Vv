@@ -32,15 +32,10 @@ android {
     compileSdkVersion project.properties.compileSdkVersion.toInteger()
     ndkVersion System.getenv("JITPACK_NDK_VERSION") ?: project.properties.ndkVersion
     
-    // Add this to handle AAR metadata issues
     lint {
         lintConfig file('../lint.xml')
         checkReleaseBuilds false  // Disable metadata checks for release builds
         abortOnError false
-    }
-    
-    dexOptions {
-        javaMaxHeapSize "4G"
     }
 
     defaultConfig {
@@ -123,10 +118,6 @@ android {
         }
     }
     
-    lint {
-        lintConfig file('../lint.xml')
-    }
-    
     namespace 'com.termux'
     
     buildFeatures {
@@ -192,11 +183,15 @@ def downloadRemoteArchive(String arch, String localUrl, String remoteUrl, String
     def file = new File(projectDir, localUrl)
     if (file.exists()) {
         def buffer = new byte[8192]
-        def input = new FileInputStream(file)
-        while (true) {
-            def readBytes = input.read(buffer)
-            if (readBytes < 0) break
-            digest.update(buffer, 0, readBytes)
+        try (def input = new FileInputStream(file)) {
+            while (true) {
+                def readBytes = input.read(buffer)
+                if (readBytes < 0) break
+                digest.update(buffer, 0, readBytes)
+            }
+        } catch (Exception e) {
+            logger.warn("Error reading file for checksum: " + e.message)
+            file.delete()
         }
         def checksum = String.format("%1\$64s", new BigInteger(1, digest.digest()).toString(16)).replace(' ', '0')
         if (checksum == expectedChecksum) {
@@ -268,9 +263,9 @@ task downloadBootstraps() {
     }
 }
 
-afterEvaluate {
-    android.applicationVariants.all { variant ->
-        variant.javaCompileProvider.get().dependsOn(downloadBootstraps)
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('compile') && task.name.endsWith('JavaWithJavac')) {
+        task.dependsOn(downloadBootstraps)
     }
 }
 
