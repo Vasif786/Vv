@@ -39,8 +39,6 @@ android {
         abortOnError false
     }
     
-    // ... rest of your config
-}
     dexOptions {
         javaMaxHeapSize "4G"
     }
@@ -124,22 +122,26 @@ android {
             path file("src/main/cpp/CMakeLists.txt")
         }
     }
+    
     lint {
         lintConfig file('../lint.xml')
     }
+    
     namespace 'com.termux'
+    
     buildFeatures {
         viewBinding true
     }
+    
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
     }
+}
 
-    applicationVariants.all { variant ->
-        if (variant.name == 'debug') {
-            variant.outputs.each { output ->
-                output.versionCodeOverride = 999999999
-            }
+applicationVariants.all { variant ->
+    if (variant.name == 'debug') {
+        variant.outputs.each { output ->
+            output.versionCodeOverride = 999999999
         }
     }
 }
@@ -273,4 +275,3 @@ afterEvaluate {
 }
 
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
