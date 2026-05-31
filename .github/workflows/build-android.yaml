@@ -1,4 +1,6 @@
-name: Build Android Release
+-name: Create libs directory
+  run: mkdir -p app/libs
+-name: Build Android Release
 
 on:
   workflow_dispatch:
