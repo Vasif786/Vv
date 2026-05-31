@@ -38,11 +38,20 @@ hack("deps/termux-app/termux-shared/src/main/java/com/termux/shared/interact/Mes
 
 function hack(file, transform) {
     if (Array.isArray(file)) {
-        for (const f of file) hack(f, transform)
+        for (const f of file) {
+            hack(f, transform);
+        }
         return;
     }
-    let content = fs.readFileSync(file, { encoding: 'utf8' })
-    let content2 = transform(content)
+
+    if (!fs.existsSync(file)) {
+        console.log("skip " + file + " (not found)");
+        return;
+    }
+
+    let content = fs.readFileSync(file, { encoding: "utf8" });
+    let content2 = transform(content);
+
     if (content2 !== content) {
         console.log("hack " + file);
         fs.writeFileSync(file, content2);
