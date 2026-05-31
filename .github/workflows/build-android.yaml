@@ -48,6 +48,9 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        
+      - name: Create libs directory
+        run: mkdir -p app/libs
 
       - name: Accept SDK Licenses
         run: yes | sdkmanager --licenses || true
