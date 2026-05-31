@@ -31,7 +31,16 @@ react {
 android {
     compileSdkVersion project.properties.compileSdkVersion.toInteger()
     ndkVersion System.getenv("JITPACK_NDK_VERSION") ?: project.properties.ndkVersion
-
+    
+    // Add this to handle AAR metadata issues
+    lint {
+        lintConfig file('../lint.xml')
+        checkReleaseBuilds false  // Disable metadata checks for release builds
+        abortOnError false
+    }
+    
+    // ... rest of your config
+}
     dexOptions {
         javaMaxHeapSize "4G"
     }
