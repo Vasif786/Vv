@@ -15,13 +15,14 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"  // Update from 1.8.0
         classpath("com.facebook.react:react-native-gradle-plugin")
+    }
+}
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-    }
-}
+    
 
 // https://github.com/facebook/react-native/issues/35210
 def REACT_NATIVE_VERSION = new JsonSlurper().parseText(file("$rootDir/package-lock.json").text).packages['node_modules/react-native'].version
